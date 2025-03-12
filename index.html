@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GDAC Disaster Data Integration</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/autosize@4.0.2/dist/autosize.min.js"></script>
+  <!-- Marker Cluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="app-container">
+    <header class="app-header">
+      <div class="navbar-fixed">
+        <nav class="nav-extended blue darken-3">
+          <div class="nav-wrapper">
+            <a href="#" class="brand-logo left">GDAC Disaster Integration</a>
+            <ul id="nav-mobile" class="right">
+              <li><a href="#settings-modal" class="modal-trigger"><i class="material-icons">settings</i></a></li>
+              <li><a href="#help-modal" class="modal-trigger"><i class="material-icons">help</i></a></li>
+            </ul>
+          </div>
+          <div class="nav-content">
+            <ul class="tabs tabs-transparent">
+              <li class="tab"><a href="#map-tab" class="active">Map View</a></li>
+              <li class="tab"><a href="#data-tab">Data</a></li>
+              <li class="tab"><a href="#ai-analysis-tab">AI Analysis</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div id="map-tab" class="col s12">
+        <div class="row">
+          <div class="col s12 m9">
+            <div id="map-container" class="map-container"></div>
+          </div>
+          <div class="col s12 m3">
+            <div class="card filter-card">
+              <div class="card-content">
+                <span class="card-title">Filters</span>
+                <div class="input-field">
+                  <select id="disaster-type-filter">
+                    <option value="" selected>All Disaster Types</option>
+                    <option value="EQ">Earthquakes</option>
+                    <option value="FL">Floods</option>
+                    <option value="TC">Tropical Cyclones</option>
+                    <option value="DR">Droughts</option>
+                    <option value="VO">Volcanic Eruptions</option>
+                    <option value="TS">Tsunamis</option>
+                    <option value="WF">Wildfires</option>
+                  </select>
+                  <label>Disaster Type</label>
+                </div>
+                <div class="input-field">
+                  <select id="severity-filter">
+                    <option value="" selected>All Severities</option>
+                    <option value="Red">Red (Severe)</option>
+                    <option value="Orange">Orange (Moderate)</option>
+                    <option value="Green">Green (Minor)</option>
+                  </select>
+                  <label>Severity</label>
+                </div>
+                <div class="input-field">
+                  <input type="text" id="date-from" class="datepicker">
+                  <label for="date-from">From Date</label>
+                </div>
+                <div class="input-field">
+                  <input type="text" id="date-to" class="datepicker">
+                  <label for="date-to">To Date</label>
+                </div>
+                <div class="switch">
+                  <label>
+                    Hide DHIS2 Facilities
+                    <input type="checkbox" id="toggle-facilities" checked>
+                    <span class="lever"></span>
+                    Show DHIS2 Facilities
+                  </label>
+                </div>
+                <div class="input-field">
+                  <select id="facility-type-filter">
+                    <option value="" selected>All Facility Types</option>
+                    <!-- Populated from DHIS2 -->
+                  </select>
+                  <label>Facility Type</label>
+                </div>
+                <div class="switch">
+                  <label>
+                    Use Live Data
+                    <input type="checkbox" id="use-static-data">
+                    <span class="lever"></span>
+                    Use Sample Data
+                  </label>
+                </div>
+              </div>
+              <div class="card-action">
+                <a href="#" id="apply-filters" class="btn blue darken-3 waves-effect waves-light">Apply</a>
+                <a href="#" id="reset-filters" class="btn-flat">Reset</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="data-tab" class="col s12">
+        <div class="row">
+          <div class="col s12">
+            <div class="card">
+              <div class="card-content">
+                <span class="card-title">GDAC Disaster Data</span>
+                <div class="disaster-feed-container">
+                  <table id="disaster-table" class="responsive-table highlight">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Severity</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="disaster-table-body">
+                      <tr>
+                        <td colspan="6" class="center-align">Loading disaster data...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ai-analysis-tab" class="col s12">
+        <div class="row">
+          <div class="col s12 m8 offset-m2">
+            <div class="card">
+              <div class="card-content">
+                <span class="card-title">AI Analysis</span>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <input id="openai-api-key" type="password" class="validate">
+                    <label for="openai-api-key">OpenAI API Key</label>
+                    <span class="helper-text">Your API key is stored locally and never sent to our servers</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <textarea id="analysis-query" class="materialize-textarea"></textarea>
+                    <label for="analysis-query">Ask a question about disaster and health data...</label>
+                  </div>
+                </div>
+                <div class="ai-analysis-output">
+                  <div id="analysis-results" class="analysis-results"></div>
+                </div>
+              </div>
+              <div class="card-action">
+                <a href="#" id="run-analysis" class="btn blue darken-3 waves-effect waves-light">Analyze</a>
+                <a href="#" id="export-word" class="btn grey darken-1 waves-effect waves-light">Export to Word</a>
+                <div class="progress ai-loading hide">
+                  <div class="indeterminate"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modals -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <h4>Settings</h4>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="gdac-rss-url" type="text" class="validate" value="https://www.gdacs.org/xml/rss.xml">
+          <label for="gdac-rss-url">GDAC RSS Feed URL</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="dhis2-api-url" type="text" class="validate">
+          <label for="dhis2-api-url">DHIS2 API URL</label>
+          <span class="helper-text">Example: https://play.im.dhis2.org/stable-2-41-3 (without /api)</span>
+        </div>
+        <div class="input-field col s12">
+          <input id="cors-proxy-url" type="text" class="validate" value="https://corsproxy.io/?">
+          <label for="cors-proxy-url">CORS Proxy URL</label>
+          <span class="helper-text">If one proxy fails, try another like https://api.allorigins.win/raw?url=</span>
+        </div>
+        <div class="input-field col s12">
+          <input id="buffer-radius" type="number" class="validate" value="50">
+          <label for="buffer-radius">Impact Radius (km)</label>
+        </div>
+        <div class="switch">
+          <label>
+            Light Mode
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="lever"></span>
+            Dark Mode
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+      <a href="#!" id="save-settings" class="modal-close waves-effect waves-green btn blue darken-3">Save</a>
+    </div>
+  </div>
+
+  <div id="help-modal" class="modal">
+    <div class="modal-content">
+      <h4>About GDAC Integration</h4>
+      <p>This application integrates disaster data from the Global Disaster Alert and Coordination System (GDAC) with your DHIS2 instance, allowing you to:</p>
+      <ul>
+        <li>Visualize disasters alongside health facilities</li>
+        <li>Identify facilities within disaster impact zones</li>
+        <li>Analyze potential health impacts using AI</li>
+        <li>Plan resource allocation based on disaster impact</li>
+      </ul>
+      <h5>Getting Started</h5>
+      <ol>
+        <li>Configure your DHIS2 API URL in Settings</li>
+        <li>Use the Map View to see disasters and facilities</li>
+        <li>Filter by disaster type, severity, and date</li>
+        <li>For AI analysis, add your OpenAI API key in the AI Analysis tab</li>
+      </ol>
+      <p>This app does not modify your DHIS2 data. It only reads organisation units and other metadata.</p>
+      
+      <h5>Troubleshooting</h5>
+      <p>If you're having trouble loading GDAC data, try these options:</p>
+      <ul>
+        <li>Switch to sample data using the toggle in the filters panel</li>
+        <li>Try a different CORS proxy in the settings</li>
+        <li>Check that your internet connection allows access to external APIs</li>
+      </ul>
+      
+      <h5>About the Developer</h5>
+      <p>This app was created for the DHIS2 community to enhance disaster response and preparedness.</p>
+      
+      <h5>Contact Information</h5>
+      <p>For inquiries about this application, please contact:</p>
+      <p><strong>John Mark Esplana</strong><br>
+      Email: <a href="mailto:digital.health@ifrc.org">digital.health@ifrc.org</a></p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+  </div>
+
+  <div id="disaster-details-modal" class="modal">
+    <div class="modal-content">
+      <h4 id="disaster-details-title">Disaster Details</h4>
+      <div id="disaster-details-content"></div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+      <a href="#!" id="analyze-this-disaster" class="waves-effect waves-green btn blue darken-3">Analyze Impact</a>
+    </div>
+  </div>
+
+  <!-- Facility Details Modal (Newly Added) -->
+  <div id="facility-details-modal" class="modal">
+    <div class="modal-content">
+      <h4 id="facility-details-title">Facility Details</h4>
+      <div id="facility-details-content"></div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" id="export-facility-word" class="btn grey darken-1 waves-effect waves-light">Export to Word</a>
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Marker Cluster JS -->
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Add Marked.js - change to specific version for better stability -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+  <script>
+    // Initialize and check for Marked.js early
+    window.addEventListener('DOMContentLoaded', function() {
+      if (typeof marked === 'undefined') {
+        console.warn("Marked.js not loaded, creating fallback");
+        window.marked = {
+          parse: function(text) {
+            return text.replace(/\n/g, '<br>');
+          }
+        };
+      } else if (typeof marked === 'function' && typeof marked.parse === 'undefined') {
+        console.log("Adding parse method to marked function");
+        marked.parse = marked;
+      }
+      console.log("Marked.js status:", typeof marked !== 'undefined' ? "Loaded" : "Not loaded");
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

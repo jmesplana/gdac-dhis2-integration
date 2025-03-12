@@ -1,0 +1,464 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.app-header {
+    z-index: 1000;
+}
+
+.app-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.map-container {
+    height: 75vh;
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-card {
+    height: 75vh;
+    overflow-y: auto;
+}
+
+.disaster-feed-container {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.ai-analysis-output {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.analysis-results {
+    white-space: pre-wrap;
+}
+
+/* Severity markers */
+.severity-Red {
+    background-color: #f44336;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.severity-Orange {
+    background-color: #ff9800;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.severity-Green {
+    background-color: #4caf50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+/* Map markers */
+.earthquake-marker {
+    color: #F44336;
+}
+
+.flood-marker {
+    color: #2196F3;
+}
+
+.cyclone-marker {
+    color: #9C27B0;
+}
+
+.drought-marker {
+    color: #FF9800;
+}
+
+.volcano-marker {
+    color: #795548;
+}
+
+.tsunami-marker {
+    color: #00BCD4;
+}
+
+.wildfire-marker {
+    color: #FF5722;
+}
+
+.facility-marker {
+    color: #4CAF50;
+}
+
+/* New CSS for affected facility markers */
+.facility-marker-affected {
+    color: red !important;
+}
+
+/* Dark mode styles */
+.dark-mode {
+    background-color: #263238;
+    color: #eceff1;
+}
+
+.dark-mode .card {
+    background-color: #37474f;
+    color: #eceff1;
+}
+
+.dark-mode .card .card-action {
+    border-top: 1px solid #455a64;
+}
+
+.dark-mode input, .dark-mode textarea {
+    color: #eceff1;
+}
+
+.dark-mode .tabs .tab a {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .tabs .tab a:hover, .dark-mode .tabs .tab a.active {
+    color: #fff;
+}
+
+/* Enhanced disaster type markers */
+.earthquake-marker {
+    color: #F44336; /* Red */
+}
+
+.flood-marker {
+    color: #2196F3; /* Blue */
+}
+
+.cyclone-marker {
+    color: #9C27B0; /* Purple */
+}
+
+.drought-marker {
+    color: #FF9800; /* Orange */
+}
+
+.volcano-marker {
+    color: #795548; /* Brown */
+}
+
+.tsunami-marker {
+    color: #00BCD4; /* Cyan */
+}
+
+.wildfire-marker {
+    color: #FF5722; /* Deep Orange */
+}
+
+.facility-marker {
+    color: #4CAF50; /* Green */
+}
+
+/* Make the marker icons stand out more */
+.disaster-marker .material-icons {
+    font-size: 24px;
+    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.5));
+}
+
+/* Add visual emphasis based on severity */
+.disaster-marker.severity-Red .material-icons {
+    font-size: 28px; /* Larger icon for red alerts */
+    animation: pulse 2s infinite;
+}
+
+.disaster-marker.severity-Orange .material-icons {
+    font-size: 26px; /* Medium size for orange alerts */
+}
+
+/* Pulsing animation for severe alerts */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Enhanced table styles */
+#disaster-table {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#disaster-table thead {
+    background-color: #f5f5f5;
+}
+
+#disaster-table th {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Add a hover effect to the table rows */
+#disaster-table tbody tr:hover {
+    background-color: #f0f7ff !important;
+    cursor: pointer;
+}
+
+/* Enhanced modal styling */
+.modal .modal-content h5 {
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #1565C0;
+}
+
+/* Legend for the map */
+.map-legend {
+    position: absolute;
+    bottom: 30px;
+    right: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 200px;
+}
+
+.map-legend h6 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.legend-icon {
+    width: 24px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.legend-label {
+    font-size: 12px;
+}
+
+/* Dark mode adjustments for map legend */
+.dark-mode .map-legend {
+    background: #37474f;
+    color: #eceff1;
+}
+
+.dark-mode .legend-label {
+    color: #eceff1;
+}
+
+/* Add these styles to your style.css file or in a <style> tag in your HTML */
+
+/* Improve styles for the analysis results container */
+.analysis-results {
+    padding: 15px;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    overflow-y: auto;
+    max-height: 500px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #ffffff;
+  }
+  
+  /* Style for light and dark mode */
+  body.dark-mode .analysis-results {
+    background-color: #263238;
+    color: #f5f5f5;
+    border-color: #455a64;
+  }
+  
+  /* Headings */
+  .analysis-results h1 {
+    font-size: 1.8em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.2em;
+  }
+  
+  .analysis-results h2 {
+    font-size: 1.5em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+  
+  .analysis-results h3 {
+    font-size: 1.3em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+  
+  /* Lists */
+  .analysis-results ul, 
+  .analysis-results ol {
+    margin-bottom: 1em;
+    margin-top: 0.5em;
+    padding-left: 2em;
+  }
+  
+  .analysis-results li {
+    margin-bottom: 0.5em;
+  }
+  
+  /* Paragraphs */
+  .analysis-results p {
+    margin-bottom: 1em;
+    text-align: justify;
+  }
+  
+  /* Bold and italic text */
+  .analysis-results strong {
+    font-weight: bold;
+    color: #0277bd; /* Blue color for emphasis in light mode */
+  }
+  
+  body.dark-mode .analysis-results strong {
+    color: #81d4fa; /* Lighter blue for dark mode */
+  }
+  
+  .analysis-results em {
+    font-style: italic;
+  }
+  
+  /* Tables */
+  .analysis-results table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1em;
+  }
+  
+  .analysis-results th, 
+  .analysis-results td {
+    border: 1px solid #e0e0e0;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  body.dark-mode .analysis-results th,
+  body.dark-mode .analysis-results td {
+    border-color: #455a64;
+  }
+  
+  .analysis-results th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  body.dark-mode .analysis-results th {
+    background-color: #37474f;
+  }
+  
+  /* Code blocks */
+  .analysis-results pre {
+    background-color: #f5f5f5;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: 1em;
+  }
+  
+  body.dark-mode .analysis-results pre {
+    background-color: #37474f;
+  }
+  
+  .analysis-results code {
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+    font-size: 0.9em;
+  }
+  
+  /* Blockquotes */
+  .analysis-results blockquote {
+    border-left: 4px solid #0277bd;
+    padding-left: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-style: italic;
+  }
+  
+  body.dark-mode .analysis-results blockquote {
+    border-left-color: #81d4fa;
+  }
+  
+  /* Error messages */
+  .analysis-results .error {
+    color: #f44336;
+    font-weight: bold;
+  }
+ 
+  /* Styles for formatted analysis output */
+  .formatted-analysis {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 15px;
+  }
+  
+  .analysis-header {
+    margin-top: 16px;
+    margin-bottom: 8px;
+    color: #1565c0;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
+  }
+  
+  .analysis-paragraph {
+    margin-bottom: 12px;
+    text-align: justify;
+  }
+  
+  .analysis-list {
+    margin-bottom: 12px;
+    padding-left: 25px;
+  }
+  
+  .analysis-list-item {
+    margin-bottom: 6px;
+  }
+  
+  .analysis-code {
+    background-color: #f5f5f5;
+    border-radius: 3px;
+    padding: 2px 5px;
+    font-family: "Courier New", monospace;
+  }
+  
+  /* Dark mode styles */
+  body.dark-mode .formatted-analysis {
+    color: #f5f5f5;
+  }
+  
+  body.dark-mode .analysis-header {
+    color: #90caf9;
+    border-bottom-color: #455a64;
+  }
+  
+  body.dark-mode .analysis-code {
+    background-color: #37474f;
+  }

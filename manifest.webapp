@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "name": "GDAC Disaster Data Integration",
+   "description": "A comprehensive disaster response tool that maps and analyzes health facilities in relation to disaster events. The application enables emergency managers to make data-driven decisions during crisis situations.\n\nKey features include:\n• Interactive mapping with customizable proximity buffer zones\n• Real-time calculation of distances between disasters and health facilities\n• Facility filtering based on distance, type, and operational status\n• AI-powered analytical reports for rapid situation assessment\n• Exportable reports for sharing with response teams\n• Integration with DHIS2 health facility data\n• Disaster database with historical and current events\n\nThe application supports critical emergency management functions:\n• Identifying at-risk health infrastructure\n• Evaluating facility readiness and capacity\n• Detecting potential service gaps during disasters\n• Informing resource allocation decisions\n• Enhancing coordination among response agencies\n\nDesigned for health ministries, NGOs, disaster management agencies, and humanitarian organizations involved in emergency preparedness and response.",
+  "launch_path": "index.html",
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "developer": {
+    "name": "John Mark Esplana",
+    "url": "https://community.dhis2.org"
+  },
+  "default_locale": "en",
+  "activities": {
+    "dhis": {
+      "href": "*",
+      "namespace": "gdac-integration"
+    }
+  },
+  "authorities": [
+    "MY_APP_ADD_NEW",
+    "MY_APP_UPDATE",
+    "MY_APP_DELETE"
+  ]
+}
